@@ -756,8 +756,8 @@
 
     <footer class="text-center py-4 mt-5 border-top">
       <p class="mb-0 text-muted">
-        &copy; ${new Date().getFullYear()} EmpSat Vision Inc. Elevating Employee
-        Experience.
+        &copy; <span id="footer-year"></span> EmpSat Vision Inc. Elevating
+        Employee Experience.
       </p>
     </footer>
 
@@ -1360,7 +1360,14 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        populateTacticsData();
+        // Set the current year in the footer
+        const yearSpan = document.getElementById("footer-year");
+        if (yearSpan) {
+          yearSpan.textContent = new Date().getFullYear();
+        }
+
+        // Initial population (already existing)
+        populateTacticsData(); // Show Tactics by default
       });
     </script>
   </body>
