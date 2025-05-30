@@ -1,751 +1,1367 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Satisfaction & Organizational Performance</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EmpSat Vision - Elevate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+      :root {
+        --primary-accent: #007bff; /* Professional Blue */
+        --primary-accent-hover: #0056b3;
+        --secondary-accent: #17a2b8; /* Info Teal */
+        --light-bg: #f8f9fc; /* Slightly softer light background */
+        --text-color: #343a40; /* Darker, richer text */
+        --card-bg: #ffffff;
+        --card-border-color: #e3e6f0;
+        --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15); /* Softer, more spread shadow */
+        --navbar-bg: #2c3e50; /* Deep Slate Blue */
+        --navbar-link-color: rgba(255, 255, 255, 0.85);
+        --navbar-link-hover-color: #ffffff;
+        --navbar-link-active-color: #ffffff;
+        --font-family-main: "Poppins", sans-serif;
+        --border-radius: 0.35rem;
+      }
+
+      body {
+        font-family: var(--font-family-main);
+        background-color: var(--light-bg);
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      .navbar {
+        background-color: var(--navbar-bg);
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .navbar-brand {
+        color: var(--navbar-link-active-color) !important;
+        font-weight: 600;
+        font-size: 1.5rem;
+      }
+      .navbar-brand .bi {
+        margin-right: 8px;
+        vertical-align: -2px;
+      }
+      .nav-link {
+        color: var(--navbar-link-color) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem !important;
+        margin: 0 0.25rem;
+        border-radius: var(--border-radius);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .nav-link:hover {
+        color: var(--navbar-link-hover-color) !important;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .nav-link.active {
+        color: var(--navbar-link-active-color) !important;
+        background-color: var(--primary-accent);
+        font-weight: 600;
+      }
+
+      .horizon-content {
+        display: none;
+        padding-top: 20px;
+      }
+      .horizon-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-        .navbar {
-            margin-bottom: 20px;
-            background-color: #343a40; /* Dark navbar */
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .navbar-brand, .nav-link {
-            color: #fff !important;
-        }
-        .nav-link.active {
-            font-weight: bold;
-            border-bottom: 2px solid #0d6efd; /* Bootstrap primary blue */
-        }
-        .horizon-content {
-            display: none;
-        }
-        .horizon-content.active {
-            display: block;
-        }
-        .card {
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .card-header {
-            background-color: #6c757d; /* Muted background for card headers */
-            color: white;
-            font-weight: bold;
-        }
-        .bsc-perspective {
-            margin-top: 15px;
-        }
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #0d6efd;
-        }
-        .intervention-table th {
-            background-color: #e9ecef;
-        }
-        .status-completed { color: green; }
-        .status-inprogress { color: orange; }
-        .status-planned { color: blue; }
-        .resource-metric { font-size: 0.9rem; color: #555; }
+      }
+
+      .page-header {
+        /* Replaces individual header styling */
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--card-border-color);
+      }
+      .page-header h1 {
+        font-weight: 600;
+        color: var(--navbar-bg); /* Use a darker color for headers */
+      }
+      .page-header .text-muted {
+        font-size: 1rem;
+        color: #6c757d !important; /* Ensure text-muted is noticeable */
+      }
+
+      .card {
+        margin-bottom: 2rem; /* Increased margin */
+        box-shadow: var(--card-shadow);
+        border: none; /* Remove default border, rely on shadow */
+        border-radius: var(--border-radius);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.3rem 2.5rem 0 rgba(58, 59, 69, 0.2);
+      }
+      .card-header {
+        background-color: var(--card-bg);
+        color: var(--primary-accent);
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--card-border-color);
+        display: flex;
+        align-items: center;
+      }
+      .card-header .bi {
+        margin-right: 0.75rem;
+        font-size: 1.3rem;
+      }
+
+      .bsc-perspective h5 {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.25rem; /* Reduced margin */
+        font-size: 1rem;
+      }
+      .metric-value {
+        font-size: 2rem; /* Larger metric value */
+        font-weight: 700;
+        color: var(--primary-accent);
+        margin-bottom: 0.25rem; /* Space before small text */
+      }
+      .card-body small,
+      .card-body .text-muted {
+        font-size: 0.85rem;
+        color: #6c757d; /* Softer grey */
+      }
+      .card-body hr {
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        border-top: 1px solid var(--card-border-color);
+      }
+
+      .intervention-table th {
+        background-color: #e9ecef; /* Light grey for table header */
+        font-weight: 600;
+        color: var(--text-color);
+      }
+      .intervention-table td {
+        vertical-align: middle;
+      }
+      .status-completed {
+        color: #28a745;
+        font-weight: 500;
+      } /* Green */
+      .status-inprogress {
+        color: #ffc107;
+        font-weight: 500;
+      } /* Amber */
+      .status-planned {
+        color: var(--secondary-accent);
+        font-weight: 500;
+      } /* Teal */
+      .resource-metric {
+        font-size: 0.9rem;
+        color: #555;
+      }
+
+      .section-title {
+        /* For "Key Tactical Interventions" etc. */
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--navbar-bg);
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-accent);
+        display: inline-block; /* To make border only as wide as text */
+      }
+
+      /* Chart canvas container */
+      .chart-container {
+        padding: 1.5rem;
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem; /* Match card margin */
+      }
+      .chart-container canvas {
+        max-height: 350px; /* Control chart height */
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">EmpSat Vision</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#" onclick="showHorizon('tactics')">Tactics</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showHorizon('strategy')">Strategy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showHorizon('vision')">Vision</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showHorizon('systemic')">Systemic Evolution</a>
-                    </li>
-                </ul>
-            </div>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"
+          ><i class="bi bi-lightning-charge-fill"></i> EmpSat Vision</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon" style="filter: invert(1)"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="#"
+                onclick="showHorizon('tactics')"
+                >Tactics</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showHorizon('strategy')"
+                >Strategy</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showHorizon('vision')"
+                >Vision</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showHorizon('systemic')"
+                >Systemic Evolution</a
+              >
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
 
-    <div class="container-fluid">
-        <div id="tactics-content" class="horizon-content active">
-            <header class="py-3 mb-4 border-bottom">
-                <h1 class="h3">Tactics Horizon (Now - 6 Months)</h1>
-                <p class="text-muted">Focus: Immediate actions, quick wins, operational adjustments, and short-term employee feedback loops.</p>
-            </header>
-            <div class="row">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Learning & Growth</div>
-                        <div class="card-body">
-                            <h5>Employee Satisfaction (Pulse)</h5>
-                            <p class="metric-value" id="tactics-satisfaction">78%</p>
-                            <small>Last pulse survey: 1 week ago</small>
-                            <hr>
-                            <h5>Recent Training Completion</h5>
-                            <p class="metric-value" id="tactics-training">92%</p>
-                            <small>Micro-learnings: "Effective Communication"</small>
-                             <hr>
-                            <h5>Immediate Feedback Volume</h5>
-                            <p>Positive: <span id="tactics-feedback-pos">65</span> | Constructive: <span id="tactics-feedback-con">23</span></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Internal Processes</div>
-                        <div class="card-body">
-                            <h5>Intervention Adherence</h5>
-                            <p class="metric-value" id="tactics-intervention-adherence">85%</p>
-                            <small>"Wellness Wednesday" participation</small>
-                            <hr>
-                            <h5>Onboarding Efficiency</h5>
-                            <p>Avg. Time to Full Productivity: <span id="tactics-onboarding-time">28 days</span></p>
-                            <small>Target: < 30 days</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Customer</div>
-                        <div class="card-body">
-                            <h5>CSAT (Post-Interaction)</h5>
-                            <p class="metric-value" id="tactics-csat">4.2/5</p>
-                            <small>Correlated with support team pulse</small>
-                            <hr>
-                            <h5>Service Desk Response Time</h5>
-                            <p class="metric-value" id="tactics-response-time">3.5 hrs</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Financial</div>
-                        <div class="card-body">
-                            <h5>Cost of Tactical Interventions</h5>
-                            <p class="metric-value" id="tactics-intervention-cost">$1,500</p>
-                            <small>This month (e.g., team lunches, spot rewards)</small>
-                            <hr>
-                            <h5>Resource Utilization (Short-term initiatives)</h5>
-                            <p class="metric-value" id="tactics-resource-util">95%</p>
-                            <small>Allocated vs. Used for current programs</small>
-                        </div>
-                    </div>
-                </div>
+    <div class="container-fluid mt-4">
+      <div id="tactics-content" class="horizon-content active">
+        <header class="page-header">
+          <h1>
+            <i class="bi bi-compass"></i> Tactics Horizon (Now - 6 Months)
+          </h1>
+          <p class="text-muted">
+            Focus: Immediate actions, quick wins, operational adjustments, and
+            short-term employee feedback loops.
+          </p>
+        </header>
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-graph-up-arrow"></i> Learning & Growth
+              </div>
+              <div class="card-body">
+                <h5>Employee Satisfaction (Pulse)</h5>
+                <p class="metric-value" id="tactics-satisfaction">78%</p>
+                <small>Last pulse survey: 1 week ago</small>
+                <hr />
+                <h5>Recent Training Completion</h5>
+                <p class="metric-value" id="tactics-training">92%</p>
+                <small>Micro-learnings: "Effective Communication"</small>
+                <hr />
+                <h5>Immediate Feedback Volume</h5>
+                <p>
+                  Positive:
+                  <span class="metric-value fs-4" id="tactics-feedback-pos"
+                    >65</span
+                  >
+                  | Constructive:
+                  <span class="metric-value fs-4" id="tactics-feedback-con"
+                    >23</span
+                  >
+                </p>
+              </div>
             </div>
-
-            <h4>Key Tactical Interventions</h4>
-            <div class="table-responsive">
-                <table class="table table-hover intervention-table">
-                    <thead>
-                        <tr><th>Intervention</th><th>Objective</th><th>Status</th><th>Effectiveness Metric</th><th>Resources Used</th></tr>
-                    </thead>
-                    <tbody id="tactics-interventions-table">
-                        </tbody>
-                </table>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-gear-wide-connected"></i> Internal Processes
+              </div>
+              <div class="card-body">
+                <h5>Intervention Adherence</h5>
+                <p class="metric-value" id="tactics-intervention-adherence">
+                  85%
+                </p>
+                <small>"Wellness Wednesday" participation</small>
+                <hr />
+                <h5>Onboarding Efficiency</h5>
+                <p>
+                  Avg. Time to Full Productivity:
+                  <span class="metric-value fs-4" id="tactics-onboarding-time"
+                    >28</span
+                  >
+                  days
+                </p>
+                <small>Target: < 30 days</small>
+              </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <canvas id="tacticalSatisfactionChart"></canvas>
-                </div>
-                 <div class="col-md-6">
-                    <canvas id="tacticalInterventionEffectivenessChart"></canvas>
-                </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-people-fill"></i> Customer
+              </div>
+              <div class="card-body">
+                <h5>CSAT (Post-Interaction)</h5>
+                <p class="metric-value" id="tactics-csat">
+                  4.2<small>/5</small>
+                </p>
+                <small>Correlated with support team pulse</small>
+                <hr />
+                <h5>Service Desk Response Time</h5>
+                <p class="metric-value" id="tactics-response-time">
+                  3.5 <small>hrs</small>
+                </p>
+              </div>
             </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-cash-coin"></i> Financial
+              </div>
+              <div class="card-body">
+                <h5>Cost of Tactical Interventions</h5>
+                <p class="metric-value" id="tactics-intervention-cost">$1.5K</p>
+                <small>This month (e.g., team lunches, spot rewards)</small>
+                <hr />
+                <h5>Resource Utilization</h5>
+                <p class="metric-value" id="tactics-resource-util">95%</p>
+                <small>Allocated vs. Used for current programs</small>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div id="strategy-content" class="horizon-content">
-            <header class="py-3 mb-4 border-bottom">
-                <h1 class="h3">Strategy Horizon (6 Months - 3 Years)</h1>
-                <p class="text-muted">Focus: Achieving strategic objectives, implementing planned programs, medium-term talent development, and optimizing resource allocation for sustained employee engagement.</p>
-            </header>
-            <div class="row">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Learning & Growth</div>
-                        <div class="card-body">
-                            <h5>Employee Engagement Score</h5>
-                            <p class="metric-value" id="strategy-engagement">72 (eNPS)</p>
-                            <small>Target: 75 by YE</small>
-                            <hr>
-                            <h5>Skill Development Index</h5>
-                            <p class="metric-value" id="strategy-skill-dev">6.8/10</p>
-                            <small>Progress on strategic competencies</small>
-                            <hr>
-                            <h5>Annual Retention Rate</h5>
-                            <p class="metric-value" id="strategy-retention">88%</p>
-                            <small>Industry Avg: 82%</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Internal Processes</div>
-                        <div class="card-body">
-                            <h5>Leadership Development Program Effectiveness</h5>
-                            <p class="metric-value" id="strategy-ldp-effectiveness">85%</p>
-                            <small>360 feedback post-program</small>
-                            <hr>
-                            <h5>Performance Management Fairness Perception</h5>
-                            <p class="metric-value" id="strategy-pm-fairness">70%</p>
-                            <small>Target: >80%</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Customer</div>
-                        <div class="card-body">
-                            <h5>Customer Lifetime Value (CLTV)</h5>
-                            <p class="metric-value" id="strategy-cltv">$5,200</p>
-                            <small>Correlation with employee tenure</small>
-                            <hr>
-                            <h5>Net Promoter Score (NPS) - Customer</h5>
-                            <p class="metric-value" id="strategy-nps">55</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Financial</div>
-                        <div class="card-body">
-                            <h5>ROI of Employee Wellness Programs</h5>
-                            <p class="metric-value" id="strategy-roi-wellness">150%</p>
-                            <small>Productivity gain vs. Program cost</small>
-                            <hr>
-                            <h5>Budget Allocation (HR Strategic Initiatives)</h5>
-                            <p class="metric-value" id="strategy-hr-budget">$250K</p>
-                            <small>Current Year Spend</small>
-                        </div>
-                    </div>
-                </div>
+        <h4 class="section-title">Key Tactical Interventions</h4>
+        <div class="table-responsive card">
+          <table class="table table-hover intervention-table mb-0">
+            <thead>
+              <tr>
+                <th><i class="bi bi-lightning-fill me-2"></i>Intervention</th>
+                <th><i class="bi bi-bullseye me-2"></i>Objective</th>
+                <th><i class="bi bi-check-circle-fill me-2"></i>Status</th>
+                <th>
+                  <i class="bi bi-clipboard-data-fill me-2"></i>Effectiveness
+                  Metric
+                </th>
+                <th><i class="bi bi-gem me-2"></i>Resources Used</th>
+              </tr>
+            </thead>
+            <tbody id="tactics-interventions-table"></tbody>
+          </table>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="tacticalSatisfactionChart"></canvas>
             </div>
+          </div>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="tacticalInterventionEffectivenessChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <h4>Key Strategic Interventions</h4>
-            <div class="table-responsive">
-                <table class="table table-hover intervention-table">
-                    <thead>
-                        <tr><th>Intervention</th><th>Objective</th><th>Timeline</th><th>Status</th><th>Effectiveness Metric (Target)</th><th>Budget Allocated</th><th>Resources Efficiency</th></tr>
-                    </thead>
-                    <tbody id="strategy-interventions-table">
-                        </tbody>
-                </table>
+      <div id="strategy-content" class="horizon-content">
+        <header class="page-header">
+          <h1>
+            <i class="bi bi-signpost-split"></i> Strategy Horizon (6 Months - 3
+            Years)
+          </h1>
+          <p class="text-muted">
+            Focus: Achieving strategic objectives, implementing planned
+            programs, medium-term talent development, and optimizing resource
+            allocation for sustained employee engagement.
+          </p>
+        </header>
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-graph-up-arrow"></i> Learning & Growth
+              </div>
+              <div class="card-body">
+                <h5>Employee Engagement Score</h5>
+                <p class="metric-value" id="strategy-engagement">
+                  72 <small>eNPS</small>
+                </p>
+                <small>Target: 75 by YE</small>
+                <hr />
+                <h5>Skill Development Index</h5>
+                <p class="metric-value" id="strategy-skill-dev">
+                  6.8<small>/10</small>
+                </p>
+                <small>Strategic competencies</small>
+                <hr />
+                <h5>Annual Retention Rate</h5>
+                <p class="metric-value" id="strategy-retention">88%</p>
+                <small>Industry Avg: 82%</small>
+              </div>
             </div>
-             <div class="row mt-3">
-                <div class="col-md-6">
-                    <canvas id="strategicEngagementTrendChart"></canvas>
-                </div>
-                <div class="col-md-6">
-                    <canvas id="strategicRetentionRateChart"></canvas>
-                </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-gear-wide-connected"></i> Internal Processes
+              </div>
+              <div class="card-body">
+                <h5>LDP Effectiveness</h5>
+                <p class="metric-value" id="strategy-ldp-effectiveness">85%</p>
+                <small>360 feedback post-program</small>
+                <hr />
+                <h5>Perf. Mgt. Fairness</h5>
+                <p class="metric-value" id="strategy-pm-fairness">70%</p>
+                <small>Target: >80%</small>
+              </div>
             </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-people-fill"></i> Customer
+              </div>
+              <div class="card-body">
+                <h5>Customer Lifetime Value</h5>
+                <p class="metric-value" id="strategy-cltv">$5.2K</p>
+                <small>Correlated with employee tenure</small>
+                <hr />
+                <h5>Net Promoter Score (NPS)</h5>
+                <p class="metric-value" id="strategy-nps">55</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-cash-coin"></i> Financial
+              </div>
+              <div class="card-body">
+                <h5>ROI of Wellness Programs</h5>
+                <p class="metric-value" id="strategy-roi-wellness">150%</p>
+                <small>Productivity vs. Program cost</small>
+                <hr />
+                <h5>HR Strategic Initiatives Budget</h5>
+                <p class="metric-value" id="strategy-hr-budget">$250K</p>
+                <small>Current Year Spend</small>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div id="vision-content" class="horizon-content">
-            <header class="py-3 mb-4 border-bottom">
-                <h1 class="h3">Vision Horizon (3 - 10 Years)</h1>
-                <p class="text-muted">Focus: Cultivating desired organizational culture, long-term employee well-being, becoming an employer of choice, and aligning workforce capabilities with future industry demands.</p>
-            </header>
-             <div class="row">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Learning & Growth</div>
-                        <div class="card-body">
-                            <h5>Employer Brand Perception</h5>
-                            <p class="metric-value" id="vision-brand-perception">Top 5%</p>
-                            <small>Industry ranking goal</small>
-                            <hr>
-                            <h5>Innovation Index</h5>
-                            <p class="metric-value" id="vision-innovation-index">7.5/10</p>
-                            <small>Employee contributions to new ideas</small>
-                             <hr>
-                            <h5>Future Skills Readiness</h5>
-                            <p class="metric-value" id="vision-future-skills">65%</p>
-                            <small>Employees proficient in identified critical future skills</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Internal Processes</div>
-                        <div class="card-body">
-                            <h5>Organizational Agility Score</h5>
-                            <p class="metric-value" id="vision-agility-score">8/10</p>
-                            <small>Adaptability to market changes</small>
-                            <hr>
-                            <h5>Knowledge Sharing Culture</h5>
-                            <p class="metric-value" id="vision-knowledge-sharing">High</p>
-                            <small>Qualitative assessment & platform usage</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Customer</div>
-                        <div class="card-body">
-                            <h5>Customer Co-Creation Index</h5>
-                            <p class="metric-value" id="vision-customer-cocreation">Active</p>
-                            <small>Involvement in product/service innovation</small>
-                            <hr>
-                            <h5>Long-term Partnership Strength</h5>
-                            <p class="metric-value" id="vision-customer-partnership">Strong</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Financial</div>
-                        <div class="card-body">
-                            <h5>Value of Human Capital</h5>
-                            <p class="metric-value" id="vision-human-capital-value">$150M</p>
-                            <small>Calculated based on future earnings potential</small>
-                            <hr>
-                            <h5>Sustainable Growth Rate</h5>
-                            <p class="metric-value" id="vision-sgr">12% p.a.</p>
-                            <small>Linked to talent pipeline strength</small>
-                        </div>
-                    </div>
-                </div>
+        <h4 class="section-title">Key Strategic Interventions</h4>
+        <div class="table-responsive card">
+          <table class="table table-hover intervention-table mb-0">
+            <thead>
+              <tr>
+                <th><i class="bi bi-lightning-fill me-2"></i>Intervention</th>
+                <th><i class="bi bi-bullseye me-2"></i>Objective</th>
+                <th><i class="bi bi-calendar-event-fill me-2"></i>Timeline</th>
+                <th><i class="bi bi-check-circle-fill me-2"></i>Status</th>
+                <th>
+                  <i class="bi bi-clipboard-data-fill me-2"></i>Effectiveness
+                  (Target)
+                </th>
+                <th><i class="bi bi-piggy-bank-fill me-2"></i>Budget</th>
+                <th><i class="bi bi-gem me-2"></i>Resources Efficiency</th>
+              </tr>
+            </thead>
+            <tbody id="strategy-interventions-table"></tbody>
+          </table>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="strategicEngagementTrendChart"></canvas>
             </div>
+          </div>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="strategicRetentionRateChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <h4>Key Visionary Initiatives</h4>
-             <div class="table-responsive">
-                <table class="table table-hover intervention-table">
-                    <thead>
-                        <tr><th>Initiative</th><th>Vision Alignment</th><th>Long-term Goal</th><th>Leading Indicators</th><th>Resource Focus</th></tr>
-                    </thead>
-                    <tbody id="vision-initiatives-table">
-                        </tbody>
-                </table>
+      <div id="vision-content" class="horizon-content">
+        <header class="page-header">
+          <h1>
+            <i class="bi bi- binoculars-fill"></i> Vision Horizon (3 - 10 Years)
+          </h1>
+          <p class="text-muted">
+            Focus: Cultivating desired organizational culture, long-term
+            employee well-being, becoming an employer of choice, and aligning
+            workforce capabilities with future industry demands.
+          </p>
+        </header>
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-graph-up-arrow"></i> Learning & Growth
+              </div>
+              <div class="card-body">
+                <h5>Employer Brand Perception</h5>
+                <p class="metric-value" id="vision-brand-perception">Top 10%</p>
+                <small>Industry ranking goal</small>
+                <hr />
+                <h5>Innovation Index</h5>
+                <p class="metric-value" id="vision-innovation-index">
+                  7.5<small>/10</small>
+                </p>
+                <small>Employee ideas</small>
+                <hr />
+                <h5>Future Skills Readiness</h5>
+                <p class="metric-value" id="vision-future-skills">65%</p>
+                <small>Critical future skills</small>
+              </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <canvas id="visionInnovationIndexChart"></canvas>
-                </div>
-                <div class="col-md-6">
-                    <canvas id="visionEmployerBrandChart"></canvas>
-                </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-gear-wide-connected"></i> Internal Processes
+              </div>
+              <div class="card-body">
+                <h5>Organizational Agility</h5>
+                <p class="metric-value" id="vision-agility-score">
+                  8<small>/10</small>
+                </p>
+                <small>Adaptability to changes</small>
+                <hr />
+                <h5>Knowledge Sharing Culture</h5>
+                <p class="metric-value" id="vision-knowledge-sharing">High</p>
+                <small>Platform usage</small>
+              </div>
             </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-people-fill"></i> Customer
+              </div>
+              <div class="card-body">
+                <h5>Customer Co-Creation</h5>
+                <p class="metric-value" id="vision-customer-cocreation">
+                  Active
+                </p>
+                <small>Product/service innovation</small>
+                <hr />
+                <h5>L-T Partnership Strength</h5>
+                <p class="metric-value" id="vision-customer-partnership">
+                  Strong
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-cash-coin"></i> Financial
+              </div>
+              <div class="card-body">
+                <h5>Value of Human Capital</h5>
+                <p class="metric-value" id="vision-human-capital-value">
+                  $150M
+                </p>
+                <small>Future earnings potential</small>
+                <hr />
+                <h5>Sustainable Growth Rate</h5>
+                <p class="metric-value" id="vision-sgr">
+                  12% <small>p.a.</small>
+                </p>
+                <small>Talent pipeline strength</small>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div id="systemic-content" class="horizon-content">
-            <header class="py-3 mb-4 border-bottom">
-                <h1 class="h3">Systemic Evolution Horizon (10+ Years / Continuous)</h1>
-                <p class="text-muted">Focus: Fostering a continuously learning, adaptive, and resilient organization where employee well-being and peak performance are deeply embedded in the organizational DNA.</p>
-            </header>
-            <div class="row">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Learning & Growth</div>
-                        <div class="card-body">
-                            <h5>Organizational Learning Capacity</h5>
-                            <p class="metric-value" id="systemic-learning-capacity">Dynamic</p>
-                            <small>Ability to unlearn and relearn</small>
-                            <hr>
-                            <h5>Psychological Safety Index</h5>
-                            <p class="metric-value" id="systemic-psych-safety">92%</p>
-                            <small>Employees feel safe to take risks</small>
-                             <hr>
-                            <h5>Purpose Alignment</h5>
-                            <p class="metric-value" id="systemic-purpose-alignment">Very High</p>
-                            <small>Employees connect personal values with company mission</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Internal Processes</div>
-                        <div class="card-body">
-                            <h5>Systemic Agility & Resilience</h5>
-                            <p class="metric-value" id="systemic-agility">Adaptive</p>
-                            <small>Response to unforeseen disruptions</small>
-                            <hr>
-                            <h5>Ethical Governance Maturity</h5>
-                            <p class="metric-value" id="systemic-ethics-maturity">Level 5</p>
-                            <small>Embedded ethical decision-making</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Customer</div>
-                        <div class="card-body">
-                            <h5>Ecosystem Co-evolution</h5>
-                            <p class="metric-value" id="systemic-ecosystem">Synergistic</p>
-                            <small>Mutual growth with partners & community</small>
-                            <hr>
-                            <h5>Societal Impact Contribution</h5>
-                            <p class="metric-value" id="systemic-societal-impact">Positive</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card bsc-perspective">
-                        <div class="card-header">Financial</div>
-                        <div class="card-body">
-                            <h5>Long-term Sustainable Value</h5>
-                            <p class="metric-value" id="systemic-sustainable-value">Perpetual</p>
-                            <small>Beyond traditional financial metrics</small>
-                            <hr>
-                            <h5>Investment in Regenerative Practices</h5>
-                            <p class="metric-value" id="systemic-regenerative-inv">Significant</p>
-                            <small>Social and Environmental regeneration</small>
-                        </div>
-                    </div>
-                </div>
+        <h4 class="section-title">Key Visionary Initiatives</h4>
+        <div class="table-responsive card">
+          <table class="table table-hover intervention-table mb-0">
+            <thead>
+              <tr>
+                <th><i class="bi bi-lightning-fill me-2"></i>Initiative</th>
+                <th><i class="bi bi-flag-fill me-2"></i>Vision Alignment</th>
+                <th><i class="bi bi-bullseye me-2"></i>Long-term Goal</th>
+                <th><i class="bi bi-graph-up me-2"></i>Leading Indicators</th>
+                <th><i class="bi bi-gem me-2"></i>Resource Focus</th>
+              </tr>
+            </thead>
+            <tbody id="vision-initiatives-table"></tbody>
+          </table>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="visionInnovationIndexChart"></canvas>
             </div>
+          </div>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="visionEmployerBrandChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <h4>Core Systemic Shifts & Enablers</h4>
-            <div class="table-responsive">
-                <table class="table table-hover intervention-table">
-                    <thead>
-                        <tr><th>Shift/Enabler</th><th>Description</th><th>Impact Horizon</th><th>Key Indicators of Evolution</th><th>Resource Philosophy</th></tr>
-                    </thead>
-                    <tbody id="systemic-shifts-table">
-                        </tbody>
-                </table>
+      <div id="systemic-content" class="horizon-content">
+        <header class="page-header">
+          <h1>
+            <i class="bi bi-infinity"></i> Systemic Evolution Horizon (10+ Years
+            / Continuous)
+          </h1>
+          <p class="text-muted">
+            Focus: Fostering a continuously learning, adaptive, and resilient
+            organization where employee well-being and peak performance are
+            deeply embedded in the organizational DNA.
+          </p>
+        </header>
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-graph-up-arrow"></i> Learning & Growth
+              </div>
+              <div class="card-body">
+                <h5>Organizational Learning</h5>
+                <p class="metric-value" id="systemic-learning-capacity">
+                  Dynamic
+                </p>
+                <small>Ability to unlearn/relearn</small>
+                <hr />
+                <h5>Psychological Safety</h5>
+                <p class="metric-value" id="systemic-psych-safety">92%</p>
+                <small>Safe to take risks</small>
+                <hr />
+                <h5>Purpose Alignment</h5>
+                <p class="metric-value" id="systemic-purpose-alignment">High</p>
+                <small>Personal & company values</small>
+              </div>
             </div>
-            <div class="row mt-3">
-                 <div class="col-md-6">
-                    <canvas id="systemicPsychSafetyChart"></canvas>
-                </div>
-                <div class="col-md-6">
-                    <canvas id="systemicLearningCapacityChart"></canvas>
-                </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-gear-wide-connected"></i> Internal Processes
+              </div>
+              <div class="card-body">
+                <h5>Systemic Agility</h5>
+                <p class="metric-value" id="systemic-agility">Adaptive</p>
+                <small>Response to disruptions</small>
+                <hr />
+                <h5>Ethical Governance Maturity</h5>
+                <p class="metric-value" id="systemic-ethics-maturity">Lvl 5</p>
+                <small>Embedded ethical decisions</small>
+              </div>
             </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-people-fill"></i> Customer
+              </div>
+              <div class="card-body">
+                <h5>Ecosystem Co-evolution</h5>
+                <p class="metric-value" id="systemic-ecosystem">Synergistic</p>
+                <small>Growth with partners</small>
+                <hr />
+                <h5>Societal Impact</h5>
+                <p class="metric-value" id="systemic-societal-impact">
+                  Positive
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card bsc-perspective">
+              <div class="card-header">
+                <i class="bi bi-cash-coin"></i> Financial
+              </div>
+              <div class="card-body">
+                <h5>Sustainable Value</h5>
+                <p class="metric-value" id="systemic-sustainable-value">
+                  Perpetual
+                </p>
+                <small>Beyond financial metrics</small>
+                <hr />
+                <h5>Regenerative Investment</h5>
+                <p class="metric-value" id="systemic-regenerative-inv">High</p>
+                <small>Social & Environmental</small>
+              </div>
+            </div>
+          </div>
         </div>
 
+        <h4 class="section-title">Core Systemic Shifts & Enablers</h4>
+        <div class="table-responsive card">
+          <table class="table table-hover intervention-table mb-0">
+            <thead>
+              <tr>
+                <th><i class="bi bi-arrow-repeat me-2"></i>Shift/Enabler</th>
+                <th><i class="bi bi-card-text me-2"></i>Description</th>
+                <th>
+                  <i class="bi bi-hourglass-split me-2"></i>Impact Horizon
+                </th>
+                <th><i class="bi bi-graph-up me-2"></i>Key Indicators</th>
+                <th><i class="bi bi-gem me-2"></i>Resource Philosophy</th>
+              </tr>
+            </thead>
+            <tbody id="systemic-shifts-table"></tbody>
+          </table>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="systemicPsychSafetyChart"></canvas>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="chart-container">
+              <canvas id="systemicLearningCapacityChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <footer class="text-center py-4 mt-5 border-top">
+      <p class="mb-0 text-muted">
+        &copy; ${new Date().getFullYear()} EmpSat Vision Inc. Elevating Employee
+        Experience.
+      </p>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
 
     <script>
-        // Dummy Data
-        const dummyData = {
-            tactics: {
-                satisfaction: "78%",
-                training: "92%",
-                feedbackPos: 65,
-                feedbackCon: 23,
-                interventionAdherence: "85%",
-                onboardingTime: "28 days",
-                csat: "4.2/5",
-                responseTime: "3.5 hrs",
-                interventionCost: "$1,500",
-                resourceUtil: "95%",
-                interventions: [
-                    { name: "Wellness Wednesdays", objective: "Boost mid-week morale", status: "In Progress", effectiveness: "80% participation", resources: "$200/week", class:"status-inprogress" },
-                    { name: "Spot Recognition Program", objective: "Acknowledge immediate achievements", status: "Completed", effectiveness: "15 recognitions given", resources: "$500 (total)", class:"status-completed"},
-                    { name: "Feedback Fridays", objective: "Gather quick team feedback", status: "Planned", effectiveness: "N/A", resources: "Time allocated", class:"status-planned"}
-                ],
-                satisfactionHistory: [70, 72, 75, 73, 78],
-                interventionEffectivenessData: [80, 90, 75] // Effectiveness percentages for 3 interventions
+      // Chart.js Global Defaults
+      Chart.defaults.font.family = "'Poppins', sans-serif";
+      Chart.defaults.color = "#555"; // Default font color for charts
+      Chart.defaults.borderColor = "rgba(0, 123, 255, 0.1)"; // Lighter grid lines
+
+      const chartColors = {
+        primary: "rgba(0, 123, 255, 0.8)", // var(--primary-accent)
+        primaryLight: "rgba(0, 123, 255, 0.5)",
+        secondary: "rgba(23, 162, 184, 0.8)", // var(--secondary-accent)
+        secondaryLight: "rgba(23, 162, 184, 0.5)",
+        green: "rgba(40, 167, 69, 0.8)",
+        amber: "rgba(255, 193, 7, 0.8)",
+        red: "rgba(220, 53, 69, 0.8)",
+      };
+
+      // Dummy Data (condensed for brevity, use previous data structure)
+      const dummyData = {
+        tactics: {
+          satisfaction: "78%",
+          training: "92%",
+          feedbackPos: 65,
+          feedbackCon: 23,
+          interventionAdherence: "85%",
+          onboardingTime: "28",
+          csat: "4.2",
+          responseTime: "3.5",
+          interventionCost: "$1.5K",
+          resourceUtil: "95%",
+          interventions: [
+            {
+              name: "Wellness Wednesdays",
+              objective: "Boost mid-week morale",
+              status: "In Progress",
+              effectiveness: "80% participation",
+              resources: "$200/wk",
+              class: "status-inprogress",
             },
-            strategy: {
-                engagement: "72 eNPS",
-                skillDev: "6.8/10",
-                retention: "88%",
-                ldpEffectiveness: "85%",
-                pmFairness: "70%",
-                cltv: "$5,200",
-                nps: "55",
-                roiWellness: "150%",
-                hrBudget: "$250K",
-                interventions: [
-                    { name: "Leadership Development Program Mk II", objective: "Develop next-gen leaders", timeline: "18 Months", status: "In Progress", effectiveness: "70% progress to target competency", budget: "$80K", efficiency: "On Track", class:"status-inprogress" },
-                    { name: "Flexible Work Arrangement Policy", objective: "Improve work-life balance & attract talent", timeline: "6 Months", status: "Completed", effectiveness: "Satisfaction up by 10%", budget: "$5K (setup)", efficiency: "High Impact", class:"status-completed" },
-                    { name: "Annual Engagement Survey & Action Planning", objective: "Systematically improve engagement", timeline: "Annual Cycle", status: "Planned", effectiveness: "Target +5 eNPS", budget: "$20K", efficiency: "N/A", class:"status-planned"}
-                ],
-                engagementTrend: [65, 68, 70, 72],
-                retentionTrend: [85, 87, 86, 88]
+            {
+              name: "Spot Recognition Program",
+              objective: "Acknowledge achievements",
+              status: "Completed",
+              effectiveness: "15 recognitions",
+              resources: "$500",
+              class: "status-completed",
             },
-            vision: {
-                brandPerception: "Top 10%",
-                innovationIndex: "7.5/10",
-                futureSkills: "65%",
-                agilityScore: "8/10",
-                knowledgeSharing: "High",
-                customerCocreation: "Active",
-                customerPartnership: "Strong",
-                humanCapitalValue: "$150M",
-                sgr: "12% p.a.",
-                initiatives: [
-                    { name: "Cultivate 'Intrapreneurship' Culture", vision: "Innovation powerhouse", goal: "Launch 5 employee-led ventures", indicators: "Idea submissions, prototype development", resources: "Seed funding, mentorship time" },
-                    { name: "AI & Future of Work Integration", vision: "Human-centric automation", goal: "Reskill 80% of workforce for AI collaboration", indicators: "Training completion, new role creation", resources: "Technology investment, L&D budget" }
-                ],
-                innovationIndexHistory: [5.5, 6.0, 6.8, 7.5],
-                employerBrandRanking: [25, 20, 15, 10] // Top X%
+            {
+              name: "Feedback Fridays",
+              objective: "Gather team feedback",
+              status: "Planned",
+              effectiveness: "N/A",
+              resources: "Time",
+              class: "status-planned",
             },
-            systemic: {
-                learningCapacity: "Dynamic",
-                psychSafety: "92%",
-                purposeAlignment: "Very High",
-                agility: "Adaptive",
-                ethicsMaturity: "Level 5",
-                ecosystem: "Synergistic",
-                societalImpact: "Positive",
-                sustainableValue: "Perpetual",
-                regenerativeInv: "Significant",
-                shifts: [
-                    { name: "Decentralized Decision Making", description: "Empowerment at all levels", horizon: "Ongoing", indicators: "Speed of local decisions, employee autonomy scores", resources: "Holistic, embedded in roles" },
-                    { name: "Purpose-Driven Work Design", description: "Aligning tasks with individual and company purpose", horizon: "Continuous", indicators: "Sense of meaning scores, discretionary effort", resources: "Cultural, leadership focus" }
-                ],
-                psychSafetyTrend: [80, 85, 88, 92],
-                learningCapacityScores: [7, 7.5, 8.5, 9] //
-            }
-        };
+          ],
+          satisfactionHistory: [70, 72, 75, 73, 78],
+          interventionEffectivenessData: [80, 90, 75],
+        },
+        strategy: {
+          engagement: "72",
+          skillDev: "6.8",
+          retention: "88%",
+          ldpEffectiveness: "85%",
+          pmFairness: "70%",
+          cltv: "$5.2K",
+          nps: "55",
+          roiWellness: "150%",
+          hrBudget: "$250K",
+          interventions: [
+            {
+              name: "LDP Mk II",
+              objective: "Next-gen leaders",
+              timeline: "18 Mo",
+              status: "In Progress",
+              effectiveness: "70% progress",
+              budget: "$80K",
+              efficiency: "On Track",
+              class: "status-inprogress",
+            },
+            {
+              name: "Flex Work Policy",
+              objective: "Work-life balance",
+              timeline: "6 Mo",
+              status: "Completed",
+              effectiveness: "Satisfaction +10%",
+              budget: "$5K",
+              efficiency: "High Impact",
+              class: "status-completed",
+            },
+          ],
+          engagementTrend: [65, 68, 70, 72],
+          retentionTrend: [85, 87, 86, 88],
+        },
+        vision: {
+          brandPerception: "Top 10%",
+          innovationIndex: "7.5",
+          futureSkills: "65%",
+          agilityScore: "8",
+          knowledgeSharing: "High",
+          customerCocreation: "Active",
+          customerPartnership: "Strong",
+          humanCapitalValue: "$150M",
+          sgr: "12%",
+          initiatives: [
+            {
+              name: "Intrapreneurship Culture",
+              vision: "Innovation powerhouse",
+              goal: "5 employee ventures",
+              indicators: "Idea submissions",
+              resources: "Seed funding",
+            },
+            {
+              name: "AI Integration",
+              vision: "Human-centric automation",
+              goal: "Reskill 80% workforce",
+              indicators: "Training completion",
+              resources: "Tech investment",
+            },
+          ],
+          innovationIndexHistory: [5.5, 6.0, 6.8, 7.5],
+          employerBrandRanking: [25, 20, 15, 10],
+        },
+        systemic: {
+          learningCapacity: "Dynamic",
+          psychSafety: "92%",
+          purposeAlignment: "High",
+          agility: "Adaptive",
+          ethicsMaturity: "Lvl 5",
+          ecosystem: "Synergistic",
+          societalImpact: "Positive",
+          sustainableValue: "Perpetual",
+          regenerativeInv: "High",
+          shifts: [
+            {
+              name: "Decentralized Decisions",
+              description: "Empowerment at all levels",
+              horizon: "Ongoing",
+              indicators: "Speed of local decisions",
+              resources: "Holistic",
+            },
+            {
+              name: "Purpose-Driven Work",
+              description: "Aligning tasks with purpose",
+              horizon: "Continuous",
+              indicators: "Sense of meaning",
+              resources: "Cultural focus",
+            },
+          ],
+          psychSafetyTrend: [80, 85, 88, 92],
+          learningCapacityScores: [8, 9, 7.5, 8.5, 7],
+        },
+      };
 
-        // Chart instances
-        let tacticalSatisfactionChart, tacticalInterventionEffectivenessChart, strategicEngagementTrendChart, strategicRetentionRateChart, visionInnovationIndexChart, visionEmployerBrandChart, systemicPsychSafetyChart, systemicLearningCapacityChart;
+      // Chart instances
+      let tacticalSatisfactionChart,
+        tacticalInterventionEffectivenessChart,
+        strategicEngagementTrendChart,
+        strategicRetentionRateChart,
+        visionInnovationIndexChart,
+        visionEmployerBrandChart,
+        systemicPsychSafetyChart,
+        systemicLearningCapacityChart;
 
+      function populateTacticsData() {
+        document.getElementById("tactics-satisfaction").textContent =
+          dummyData.tactics.satisfaction;
+        document.getElementById("tactics-training").textContent =
+          dummyData.tactics.training;
+        document.getElementById("tactics-feedback-pos").textContent =
+          dummyData.tactics.feedbackPos;
+        document.getElementById("tactics-feedback-con").textContent =
+          dummyData.tactics.feedbackCon;
+        document.getElementById("tactics-intervention-adherence").textContent =
+          dummyData.tactics.interventionAdherence;
+        document.getElementById(
+          "tactics-onboarding-time"
+        ).innerHTML = `${dummyData.tactics.onboardingTime} <small class="fs-6 fw-normal">days</small>`;
+        document.getElementById(
+          "tactics-csat"
+        ).innerHTML = `${dummyData.tactics.csat}<small class="fs-6 fw-normal">/5</small>`;
+        document.getElementById(
+          "tactics-response-time"
+        ).innerHTML = `${dummyData.tactics.responseTime} <small class="fs-6 fw-normal">hrs</small>`;
+        document.getElementById("tactics-intervention-cost").textContent =
+          dummyData.tactics.interventionCost;
+        document.getElementById("tactics-resource-util").textContent =
+          dummyData.tactics.resourceUtil;
 
-        function populateTacticsData() {
-            document.getElementById('tactics-satisfaction').textContent = dummyData.tactics.satisfaction;
-            document.getElementById('tactics-training').textContent = dummyData.tactics.training;
-            document.getElementById('tactics-feedback-pos').textContent = dummyData.tactics.feedbackPos;
-            document.getElementById('tactics-feedback-con').textContent = dummyData.tactics.feedbackCon;
-            document.getElementById('tactics-intervention-adherence').textContent = dummyData.tactics.interventionAdherence;
-            document.getElementById('tactics-onboarding-time').textContent = dummyData.tactics.onboardingTime;
-            document.getElementById('tactics-csat').textContent = dummyData.tactics.csat;
-            document.getElementById('tactics-response-time').textContent = dummyData.tactics.responseTime;
-            document.getElementById('tactics-intervention-cost').textContent = dummyData.tactics.interventionCost;
-            document.getElementById('tactics-resource-util').textContent = dummyData.tactics.resourceUtil;
-
-            const tacticsTable = document.getElementById('tactics-interventions-table');
-            tacticsTable.innerHTML = ''; // Clear existing
-            dummyData.tactics.interventions.forEach(item => {
-                tacticsTable.innerHTML += `<tr><td>${item.name}</td><td>${item.objective}</td><td><span class="${item.class}">${item.status}</span></td><td>${item.effectiveness}</td><td class="resource-metric">${item.resources}</td></tr>`;
-            });
-
-            // Tactical Satisfaction Chart
-            const tsCtx = document.getElementById('tacticalSatisfactionChart').getContext('2d');
-            if (tacticalSatisfactionChart) tacticalSatisfactionChart.destroy();
-            tacticalSatisfactionChart = new Chart(tsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Current'],
-                    datasets: [{
-                        label: 'Pulse Satisfaction Trend (%)',
-                        data: dummyData.tactics.satisfactionHistory,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Recent Satisfaction Trend' }}}
-            });
-
-            // Tactical Intervention Effectiveness Chart
-            const tieCtx = document.getElementById('tacticalInterventionEffectivenessChart').getContext('2d');
-            if (tacticalInterventionEffectivenessChart) tacticalInterventionEffectivenessChart.destroy();
-            tacticalInterventionEffectivenessChart = new Chart(tieCtx, {
-                type: 'bar',
-                data: {
-                    labels: dummyData.tactics.interventions.map(i => i.name.substring(0,15)), // Shorten names for labels
-                    datasets: [{
-                        label: 'Effectiveness (%)',
-                        data: dummyData.tactics.interventionEffectivenessData,
-                        backgroundColor: ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)']
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Intervention Effectiveness' }}}
-            });
-        }
-
-        function populateStrategyData() {
-            document.getElementById('strategy-engagement').textContent = dummyData.strategy.engagement;
-            document.getElementById('strategy-skill-dev').textContent = dummyData.strategy.skillDev;
-            document.getElementById('strategy-retention').textContent = dummyData.strategy.retention;
-            document.getElementById('strategy-ldp-effectiveness').textContent = dummyData.strategy.ldpEffectiveness;
-            document.getElementById('strategy-pm-fairness').textContent = dummyData.strategy.pmFairness;
-            document.getElementById('strategy-cltv').textContent = dummyData.strategy.cltv;
-            document.getElementById('strategy-nps').textContent = dummyData.strategy.nps;
-            document.getElementById('strategy-roi-wellness').textContent = dummyData.strategy.roiWellness;
-            document.getElementById('strategy-hr-budget').textContent = dummyData.strategy.hrBudget;
-
-            const strategyTable = document.getElementById('strategy-interventions-table');
-            strategyTable.innerHTML = ''; // Clear existing
-            dummyData.strategy.interventions.forEach(item => {
-                strategyTable.innerHTML += `<tr><td>${item.name}</td><td>${item.objective}</td><td>${item.timeline}</td><td><span class="${item.class}">${item.status}</span></td><td>${item.effectiveness}</td><td class="resource-metric">${item.budget}</td><td class="resource-metric">${item.efficiency}</td></tr>`;
-            });
-
-            // Strategic Engagement Trend Chart
-            const setCtx = document.getElementById('strategicEngagementTrendChart').getContext('2d');
-            if (strategicEngagementTrendChart) strategicEngagementTrendChart.destroy();
-            strategicEngagementTrendChart = new Chart(setCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Q1', 'Q2', 'Q3', 'Q4 (Current)'],
-                    datasets: [{
-                        label: 'eNPS Trend',
-                        data: dummyData.strategy.engagementTrend,
-                        borderColor: 'rgb(153, 102, 255)',
-                        tension: 0.1
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Strategic Engagement (eNPS)' }}}
-            });
-            
-            // Strategic Retention Rate Chart
-            const srrCtx = document.getElementById('strategicRetentionRateChart').getContext('2d');
-             if (strategicRetentionRateChart) strategicRetentionRateChart.destroy();
-            strategicRetentionRateChart = new Chart(srrCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Year -3', 'Year -2', 'Year -1', 'Current Year'],
-                    datasets: [{
-                        label: 'Annual Retention Rate (%)',
-                        data: dummyData.strategy.retentionTrend,
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Annual Retention Rate' }}}
-            });
-        }
-
-        function populateVisionData() {
-            document.getElementById('vision-brand-perception').textContent = dummyData.vision.brandPerception;
-            document.getElementById('vision-innovation-index').textContent = dummyData.vision.innovationIndex;
-            document.getElementById('vision-future-skills').textContent = dummyData.vision.futureSkills;
-            document.getElementById('vision-agility-score').textContent = dummyData.vision.agilityScore;
-            document.getElementById('vision-knowledge-sharing').textContent = dummyData.vision.knowledgeSharing;
-            document.getElementById('vision-customer-cocreation').textContent = dummyData.vision.customerCocreation;
-            document.getElementById('vision-customer-partnership').textContent = dummyData.vision.customerPartnership;
-            document.getElementById('vision-human-capital-value').textContent = dummyData.vision.humanCapitalValue;
-            document.getElementById('vision-sgr').textContent = dummyData.vision.sgr;
-
-            const visionTable = document.getElementById('vision-initiatives-table');
-            visionTable.innerHTML = ''; // Clear existing
-            dummyData.vision.initiatives.forEach(item => {
-                visionTable.innerHTML += `<tr><td>${item.name}</td><td>${item.vision}</td><td>${item.goal}</td><td>${item.indicators}</td><td class="resource-metric">${item.resources}</td></tr>`;
-            });
-
-            // Vision Innovation Index Chart
-            const viiCtx = document.getElementById('visionInnovationIndexChart').getContext('2d');
-            if (visionInnovationIndexChart) visionInnovationIndexChart.destroy();
-            visionInnovationIndexChart = new Chart(viiCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Y-3', 'Y-2', 'Y-1', 'Current'],
-                    datasets: [{
-                        label: 'Innovation Index (/10)',
-                        data: dummyData.vision.innovationIndexHistory,
-                        borderColor: 'rgb(255, 159, 64)',
-                        tension: 0.1
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Innovation Index Over Time' }}}
-            });
-
-            // Vision Employer Brand Chart
-            const vebCtx = document.getElementById('visionEmployerBrandChart').getContext('2d');
-            if (visionEmployerBrandChart) visionEmployerBrandChart.destroy();
-            visionEmployerBrandChart = new Chart(vebCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Y-3', 'Y-2', 'Y-1', 'Current Goal'],
-                    datasets: [{
-                        label: 'Employer Brand Ranking (Top X%)',
-                        data: dummyData.vision.employerBrandRanking,
-                        backgroundColor: 'rgba(75, 192, 192, 0.7)'
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { reverse: true, suggestedMin: 1, suggestedMax: 30 }}, plugins: { title: { display: true, text: 'Employer Brand Ranking Progress' }}} // Reverse for "Top X%"
-            });
-        }
-
-        function populateSystemicData() {
-            document.getElementById('systemic-learning-capacity').textContent = dummyData.systemic.learningCapacity;
-            document.getElementById('systemic-psych-safety').textContent = dummyData.systemic.psychSafety;
-            document.getElementById('systemic-purpose-alignment').textContent = dummyData.systemic.purposeAlignment;
-            document.getElementById('systemic-agility').textContent = dummyData.systemic.agility;
-            document.getElementById('systemic-ethics-maturity').textContent = dummyData.systemic.ethicsMaturity;
-            document.getElementById('systemic-ecosystem').textContent = dummyData.systemic.ecosystem;
-            document.getElementById('systemic-societal-impact').textContent = dummyData.systemic.societalImpact;
-            document.getElementById('systemic-sustainable-value').textContent = dummyData.systemic.sustainableValue;
-            document.getElementById('systemic-regenerative-inv').textContent = dummyData.systemic.regenerativeInv;
-
-            const systemicTable = document.getElementById('systemic-shifts-table');
-            systemicTable.innerHTML = ''; // Clear existing
-            dummyData.systemic.shifts.forEach(item => {
-                systemicTable.innerHTML += `<tr><td>${item.name}</td><td>${item.description}</td><td>${item.horizon}</td><td>${item.indicators}</td><td class="resource-metric">${item.resources}</td></tr>`;
-            });
-            
-            // Systemic Psych Safety Chart
-            const spsCtx = document.getElementById('systemicPsychSafetyChart').getContext('2d');
-            if (systemicPsychSafetyChart) systemicPsychSafetyChart.destroy();
-            systemicPsychSafetyChart = new Chart(spsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Baseline', 'Year 2', 'Year 4', 'Current'],
-                    datasets: [{
-                        label: 'Psychological Safety Index (%)',
-                        data: dummyData.systemic.psychSafetyTrend,
-                        borderColor: 'rgb(60, 179, 113)',
-                        tension: 0.1
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Psychological Safety Evolution' }}}
-            });
-
-            // Systemic Learning Capacity Chart
-            const slcCtx = document.getElementById('systemicLearningCapacityChart').getContext('2d');
-            if (systemicLearningCapacityChart) systemicLearningCapacityChart.destroy();
-            systemicLearningCapacityChart = new Chart(slcCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Adaptability', 'Knowledge Sharing', 'Innovation Culture', 'Feedback Seeking', 'Unlearning/Relearning'],
-                    datasets: [{
-                        label: 'Learning Capacity Indicators',
-                        data: [8, 9, 7.5, 8.5, 7], // Example scores
-                        fill: true,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        pointBackgroundColor: 'rgb(255, 99, 132)',
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Organizational Learning Capacity Profile' }}}
-            });
-        }
-
-        function showHorizon(horizonId) {
-            // Hide all content sections
-            document.querySelectorAll('.horizon-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            // Deactivate all nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            // Show the selected content section
-            document.getElementById(horizonId + '-content').classList.add('active');
-            // Activate the selected nav link
-            event.currentTarget.classList.add('active');
-
-            // Populate data for the active horizon
-            if (horizonId === 'tactics') populateTacticsData();
-            else if (horizonId === 'strategy') populateStrategyData();
-            else if (horizonId === 'vision') populateVisionData();
-            else if (horizonId === 'systemic') populateSystemicData();
-        }
-
-        // Initial population
-        document.addEventListener('DOMContentLoaded', () => {
-            populateTacticsData(); // Show Tactics by default
+        const tacticsTable = document.getElementById(
+          "tactics-interventions-table"
+        );
+        tacticsTable.innerHTML = "";
+        dummyData.tactics.interventions.forEach((item) => {
+          tacticsTable.innerHTML += `<tr><td>${item.name}</td><td>${
+            item.objective
+          }</td><td><span class="${item.class}"><i class="bi bi-${
+            item.status === "Completed"
+              ? "check2-all"
+              : item.status === "In Progress"
+              ? "hourglass-split"
+              : "calendar-plus"
+          } me-1"></i>${item.status}</span></td><td>${
+            item.effectiveness
+          }</td><td class="resource-metric">${item.resources}</td></tr>`;
         });
+
+        const tsCtx = document
+          .getElementById("tacticalSatisfactionChart")
+          .getContext("2d");
+        if (tacticalSatisfactionChart) tacticalSatisfactionChart.destroy();
+        tacticalSatisfactionChart = new Chart(tsCtx, {
+          type: "line",
+          data: {
+            labels: ["W1", "W2", "W3", "W4", "Now"],
+            datasets: [
+              {
+                label: "Pulse Satisfaction (%)",
+                data: dummyData.tactics.satisfactionHistory,
+                borderColor: chartColors.primary,
+                backgroundColor: chartColors.primaryLight,
+                tension: 0.3,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Recent Satisfaction Trend",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+
+        const tieCtx = document
+          .getElementById("tacticalInterventionEffectivenessChart")
+          .getContext("2d");
+        if (tacticalInterventionEffectivenessChart)
+          tacticalInterventionEffectivenessChart.destroy();
+        tacticalInterventionEffectivenessChart = new Chart(tieCtx, {
+          type: "bar",
+          data: {
+            labels: dummyData.tactics.interventions.map((i) =>
+              i.name.substring(0, 15)
+            ),
+            datasets: [
+              {
+                label: "Effectiveness (%)",
+                data: dummyData.tactics.interventionEffectivenessData,
+                backgroundColor: [
+                  chartColors.green,
+                  chartColors.primary,
+                  chartColors.amber,
+                ],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Intervention Effectiveness",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+      }
+
+      function populateStrategyData() {
+        document.getElementById(
+          "strategy-engagement"
+        ).innerHTML = `${dummyData.strategy.engagement} <small class="fs-6 fw-normal">eNPS</small>`;
+        document.getElementById(
+          "strategy-skill-dev"
+        ).innerHTML = `${dummyData.strategy.skillDev}<small class="fs-6 fw-normal">/10</small>`;
+        document.getElementById("strategy-retention").textContent =
+          dummyData.strategy.retention;
+        document.getElementById("strategy-ldp-effectiveness").textContent =
+          dummyData.strategy.ldpEffectiveness;
+        document.getElementById("strategy-pm-fairness").textContent =
+          dummyData.strategy.pmFairness;
+        document.getElementById("strategy-cltv").textContent =
+          dummyData.strategy.cltv;
+        document.getElementById("strategy-nps").textContent =
+          dummyData.strategy.nps;
+        document.getElementById("strategy-roi-wellness").textContent =
+          dummyData.strategy.roiWellness;
+        document.getElementById("strategy-hr-budget").textContent =
+          dummyData.strategy.hrBudget;
+
+        const strategyTable = document.getElementById(
+          "strategy-interventions-table"
+        );
+        strategyTable.innerHTML = "";
+        dummyData.strategy.interventions.forEach((item) => {
+          strategyTable.innerHTML += `<tr><td>${item.name}</td><td>${
+            item.objective
+          }</td><td>${item.timeline}</td><td><span class="${
+            item.class
+          }"><i class="bi bi-${
+            item.status === "Completed"
+              ? "check2-all"
+              : item.status === "In Progress"
+              ? "hourglass-split"
+              : "calendar-plus"
+          } me-1"></i>${item.status}</span></td><td>${
+            item.effectiveness
+          }</td><td class="resource-metric">${
+            item.budget
+          }</td><td class="resource-metric">${item.efficiency}</td></tr>`;
+        });
+
+        const setCtx = document
+          .getElementById("strategicEngagementTrendChart")
+          .getContext("2d");
+        if (strategicEngagementTrendChart)
+          strategicEngagementTrendChart.destroy();
+        strategicEngagementTrendChart = new Chart(setCtx, {
+          type: "line",
+          data: {
+            labels: ["Q1", "Q2", "Q3", "Q4"],
+            datasets: [
+              {
+                label: "eNPS Trend",
+                data: dummyData.strategy.engagementTrend,
+                borderColor: chartColors.secondary,
+                backgroundColor: chartColors.secondaryLight,
+                tension: 0.3,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Strategic Engagement (eNPS)",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+
+        const srrCtx = document
+          .getElementById("strategicRetentionRateChart")
+          .getContext("2d");
+        if (strategicRetentionRateChart) strategicRetentionRateChart.destroy();
+        strategicRetentionRateChart = new Chart(srrCtx, {
+          type: "bar",
+          data: {
+            labels: ["Y-3", "Y-2", "Y-1", "Now"],
+            datasets: [
+              {
+                label: "Annual Retention Rate (%)",
+                data: dummyData.strategy.retentionTrend,
+                backgroundColor: chartColors.primary,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Annual Retention Rate",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+      }
+
+      function populateVisionData() {
+        document.getElementById("vision-brand-perception").textContent =
+          dummyData.vision.brandPerception;
+        document.getElementById(
+          "vision-innovation-index"
+        ).innerHTML = `${dummyData.vision.innovationIndex}<small class="fs-6 fw-normal">/10</small>`;
+        document.getElementById("vision-future-skills").textContent =
+          dummyData.vision.futureSkills;
+        document.getElementById(
+          "vision-agility-score"
+        ).innerHTML = `${dummyData.vision.agilityScore}<small class="fs-6 fw-normal">/10</small>`;
+        document.getElementById("vision-knowledge-sharing").textContent =
+          dummyData.vision.knowledgeSharing;
+        document.getElementById("vision-customer-cocreation").textContent =
+          dummyData.vision.customerCocreation;
+        document.getElementById("vision-customer-partnership").textContent =
+          dummyData.vision.customerPartnership;
+        document.getElementById("vision-human-capital-value").textContent =
+          dummyData.vision.humanCapitalValue;
+        document.getElementById(
+          "vision-sgr"
+        ).innerHTML = `${dummyData.vision.sgr} <small class="fs-6 fw-normal">p.a.</small>`;
+
+        const visionTable = document.getElementById("vision-initiatives-table");
+        visionTable.innerHTML = "";
+        dummyData.vision.initiatives.forEach((item) => {
+          visionTable.innerHTML += `<tr><td>${item.name}</td><td>${item.vision}</td><td>${item.goal}</td><td>${item.indicators}</td><td class="resource-metric">${item.resources}</td></tr>`;
+        });
+
+        const viiCtx = document
+          .getElementById("visionInnovationIndexChart")
+          .getContext("2d");
+        if (visionInnovationIndexChart) visionInnovationIndexChart.destroy();
+        visionInnovationIndexChart = new Chart(viiCtx, {
+          type: "line",
+          data: {
+            labels: ["Y-3", "Y-2", "Y-1", "Now"],
+            datasets: [
+              {
+                label: "Innovation Index (/10)",
+                data: dummyData.vision.innovationIndexHistory,
+                borderColor: chartColors.amber,
+                backgroundColor: "rgba(255, 193, 7, 0.3)",
+                tension: 0.3,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Innovation Index Over Time",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+
+        const vebCtx = document
+          .getElementById("visionEmployerBrandChart")
+          .getContext("2d");
+        if (visionEmployerBrandChart) visionEmployerBrandChart.destroy();
+        visionEmployerBrandChart = new Chart(vebCtx, {
+          type: "bar",
+          data: {
+            labels: ["Y-3", "Y-2", "Y-1", "Goal"],
+            datasets: [
+              {
+                label: "Employer Brand Ranking (Top X%)",
+                data: dummyData.vision.employerBrandRanking,
+                backgroundColor: chartColors.green,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { reverse: true, beginAtZero: false } },
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Employer Brand Ranking",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+      }
+
+      function populateSystemicData() {
+        document.getElementById("systemic-learning-capacity").textContent =
+          dummyData.systemic.learningCapacity;
+        document.getElementById("systemic-psych-safety").textContent =
+          dummyData.systemic.psychSafety;
+        document.getElementById("systemic-purpose-alignment").textContent =
+          dummyData.systemic.purposeAlignment;
+        document.getElementById("systemic-agility").textContent =
+          dummyData.systemic.agility;
+        document.getElementById("systemic-ethics-maturity").textContent =
+          dummyData.systemic.ethicsMaturity;
+        document.getElementById("systemic-ecosystem").textContent =
+          dummyData.systemic.ecosystem;
+        document.getElementById("systemic-societal-impact").textContent =
+          dummyData.systemic.societalImpact;
+        document.getElementById("systemic-sustainable-value").textContent =
+          dummyData.systemic.sustainableValue;
+        document.getElementById("systemic-regenerative-inv").textContent =
+          dummyData.systemic.regenerativeInv;
+
+        const systemicTable = document.getElementById("systemic-shifts-table");
+        systemicTable.innerHTML = "";
+        dummyData.systemic.shifts.forEach((item) => {
+          systemicTable.innerHTML += `<tr><td>${item.name}</td><td>${item.description}</td><td>${item.horizon}</td><td>${item.indicators}</td><td class="resource-metric">${item.resources}</td></tr>`;
+        });
+
+        const spsCtx = document
+          .getElementById("systemicPsychSafetyChart")
+          .getContext("2d");
+        if (systemicPsychSafetyChart) systemicPsychSafetyChart.destroy();
+        systemicPsychSafetyChart = new Chart(spsCtx, {
+          type: "line",
+          data: {
+            labels: ["Baseline", "Y2", "Y4", "Now"],
+            datasets: [
+              {
+                label: "Psychological Safety Index (%)",
+                data: dummyData.systemic.psychSafetyTrend,
+                borderColor: chartColors.primary,
+                backgroundColor: chartColors.primaryLight,
+                tension: 0.3,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Psychological Safety Evolution",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+
+        const slcCtx = document
+          .getElementById("systemicLearningCapacityChart")
+          .getContext("2d");
+        if (systemicLearningCapacityChart)
+          systemicLearningCapacityChart.destroy();
+        systemicLearningCapacityChart = new Chart(slcCtx, {
+          type: "radar",
+          data: {
+            labels: ["Adapt", "Share", "Innovate", "Feedback", "Unlearn"],
+            datasets: [
+              {
+                label: "Learning Capacity",
+                data: dummyData.systemic.learningCapacityScores,
+                backgroundColor: chartColors.secondaryLight,
+                borderColor: chartColors.secondary,
+                pointBackgroundColor: chartColors.secondary,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: true, position: "bottom" },
+              title: {
+                display: true,
+                text: "Org. Learning Capacity Profile",
+                font: { size: 16, weight: "600" },
+              },
+            },
+          },
+        });
+      }
+
+      function showHorizon(horizonId) {
+        document
+          .querySelectorAll(".horizon-content")
+          .forEach((content) => content.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((link) => link.classList.remove("active"));
+
+        document.getElementById(horizonId + "-content").classList.add("active");
+        document
+          .querySelector(`.nav-link[onclick="showHorizon('${horizonId}')"]`)
+          .classList.add("active");
+
+        if (horizonId === "tactics") populateTacticsData();
+        else if (horizonId === "strategy") populateStrategyData();
+        else if (horizonId === "vision") populateVisionData();
+        else if (horizonId === "systemic") populateSystemicData();
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        populateTacticsData();
+      });
     </script>
-</body>
+  </body>
 </html>
